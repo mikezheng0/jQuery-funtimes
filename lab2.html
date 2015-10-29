@@ -1,0 +1,149 @@
+<!DOCTYPE html> 
+<html> 
+<head> 
+	<title>My Page</title> 
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+		<link rel="stylesheet" href="https://code.jquery.com/mobile/1.2.1/jquery.mobile-1.2.1.min.css" />
+
+	<script src="https://code.jquery.com/jquery-1.8.3.min.js"></script>
+	<script src="https://code.jquery.com/mobile/1.2.1/jquery.mobile-1.2.1.min.js"></script>
+<style>
+.player {
+    text-align: center;
+}
+
+.player .ui-controlgroup-controls {
+    margin: 0 auto;
+}
+.player a{
+line-height:50px;
+}
+input.ui-input-text {
+text-align:center;
+width:50%;
+margin:auto;
+font-size:50px;
+}
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+    /* display: none; <- Crashes Chrome on hover */
+    -webkit-appearance: none;
+    margin: 0; /* <-- Apparently some margin are still there even though it's hidden */
+}
+</style>
+</head> 
+<body> 
+
+<div id = "home" data-role="page" data-title="Home">
+
+	<div data-role="header">
+		<h1>Home</h1>
+	</div><!-- /header -->
+
+	<div data-role="content">	
+		
+		<div>
+			<fieldset data-role="controlgroup">
+			<legend>How Many Players:</legend>
+				<input type="radio" name="player-choice" id="player-choice-1" value="2" checked="checked">
+				<label for="player-choice-1">Two</label>
+				<input type="radio" name="player-choice" id="player-choice-2" value="3">
+				<label for="player-choice-2">Three</label>
+				<input type="radio" name="player-choice" id="player-choice-3" value="4">
+				<label for="player-choice-3">Four</label>
+			</fieldset>
+			<fieldset data-role="controlgroup">
+			<legend>Gametype:</legend>
+				<input type="radio" name="game-choice" id="game-choice-1" value="20" checked="checked">
+				<label for="game-choice-1">Regular (20 life)</label>
+				<input type="radio" name="game-choice" id="game-choice-2" value="40">
+				<label for="game-choice-2">Commander (40 life)</label>
+			</fieldset>
+		</div>
+		<a id ="lifecountersub" href = "#lifecounter" data-role="button">submit</a>
+		
+	</div><!-- /content -->
+
+</div><!-- /page -->
+
+<div id = "lifecounter" data-role="page" data-title="Life Counter">
+
+	<div data-role="header" data-position="fixed">
+		<h1>Life Counter</h1>
+		<a href="#home" data-icon="home" data-iconpos="notext">home</a>
+	</div><!-- /header -->
+	
+	
+	<div data-role="content" >
+	<div  class="ui-grid-a" id = "countermain">
+	<div class="playerdiv ui-block-a" id="playerdiv-1">
+		<input id="player-lifetotal-1" class="lifebox" type="number" name="lifetotal" value = '0' max="9999">
+		<div id = "player-1" class ="player" data-role="controlgroup" data-type="horizontal">
+			<a class="addbutton" data-addval="1" data-playerval="1" href="#" data-role="button">+1</a>
+			<a class="addbutton" data-addval="5" data-playerval="1" href="#" data-role="button">+5</a>
+			<a class="subbutton" data-subval="5" data-playerval="1" href="#" data-role="button">-5</a>
+			<a class="subbutton" data-subval="1" data-playerval="1" href="#" data-role="button">-1</a>
+		</div>
+	</div>
+		<script>
+			$(document).ready(function(){
+			
+				$("#lifecountersub").click(function(){
+					var playercount = 0;
+					var startinglife = 0;
+					startinglife = parseInt($('input[name="game-choice"]:checked').val());
+					playercount = parseInt($('input[name="player-choice"]:checked').val());
+					$(".lifebox").val(startinglife);
+					while(playercount>$('.playerdiv').length)
+					createPlayer();
+					while(playercount<$('.playerdiv').length)
+						$('.playerdiv').last().remove();
+				})
+				
+				$(".addbutton").click(function(){
+					
+					var currentplayer = $(this).attr('data-playerval');
+					var lifeChange = parseInt($(this).attr('data-addval'));
+					var currentlife = parseInt($('#player-lifetotal-'+currentplayer).val());
+					currentlife+=lifeChange;
+					$('#player-lifetotal-'+currentplayer).val(currentlife);
+				})
+				
+				$(".subbutton").click(function(){
+					var currentplayer = $(this).attr('data-playerval');
+					var lifeChange = parseInt($(this).attr('data-subval'));
+					var currentlife = parseInt($('#player-lifetotal-'+currentplayer).val());
+					currentlife-=lifeChange;
+					$('#player-lifetotal-'+currentplayer).val(currentlife);
+				})
+				
+				$(".lifebox").change(function(){
+					var currentplayer = parseInt($(this).closest('a').attr('data-playerval'));
+					if ($('#player-lifetotal-'+currentplayer).val()=="")
+						$('#player-lifetotal-'+currentplayer).val(0);
+				})
+				var regex = /^(.*)(\d)+$/i;
+				var cloneIndex = $(".playerdiv").length;
+				function createPlayer(){
+				cloneIndex++;
+					var cloned = $("#playerdiv-1").clone(true);
+					var currentlength = $(".playerdiv").length;
+						cloned.removeClass('ui-block-a');
+						if (currentlength % 2 == 0)
+							cloned.addClass('ui-block-a');
+						else 
+							cloned.addClass('ui-block-b');
+						cloned.find('*[id*=playerdiv-]').attr('id', 'playerdiv-'+cloneIndex);
+						cloned.find('*[id*=player-lifetotal-]').attr('id', 'player-lifetotal-'+cloneIndex);
+						cloned.find('*[id*=player-]').attr('id', 'player-lifetotal-'+cloneIndex);
+						cloned.find('a').attr('data-playerval', cloneIndex);
+				$('#countermain').append(cloned);
+				}
+			})
+		</script>
+	</div><!-- /content -->
+	</div>
+</div><!-- /page -->
+
+</body>
+</html>

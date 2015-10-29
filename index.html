@@ -2,19 +2,23 @@
 <html>
 <head>
 	<meta charset="UTF-8">
-	<link rel="stylesheet" href="https://code.jquery.com/mobile/1.2.0/jquery.mobile-1.2.0.min.css">
-    <script src="https://code.jquery.com/jquery-1.8.2.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
 	<title>newjQuery</title>
 </head>
 <body>
 <header>
 <h1>New jQuery Test</h1>
 </header>
-<a href="http://jquery.com/">jQuery</a>
-    <script src="jquery.js"></script>
+<button data-pid="btn1">press</button>
+<p id = "btn1">hi</p>
     <script>
     // Your code goes here.
- 
+	$(function(){
+	var attribute = $('button').attr('data-pid')
+		$('button').click(function(){
+			$('#'+attribute).hide();
+		});
+	});
     </script>
 </body>
 </html>
